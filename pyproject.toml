@@ -1,0 +1,10 @@
+[project]
+name = "coggle"
+version = "0.1.0"
+description = "A lightweight, fully offline CLI tool for file processing, conversion, format specific operations and bulk management using tiny NLP pipelines, no GPU required."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pip>=26.0.1",
+    "spacy>=3.8.13",
+]
