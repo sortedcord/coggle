@@ -1,3 +1,5 @@
+import spacy
+
 def span_splitter(spacy_doc):
     spans = [[]]
     root_verb = ""
@@ -10,6 +12,14 @@ def span_splitter(spacy_doc):
             continue
         if token.pos_ == "ADP" or token.pos_ == "VERB":
             spans.append([])
-        spans[-1].append(token)
-    print("Root verb: " + root_verb)
-    print(spans)
+        spans[-1].append(token.text)
+    return spans
+
+
+def run_nlp(query: str):
+    nlp = spacy.load("en_core_web_sm")
+
+    return nlp(query)
+
+def detect_spans(query: str) -> list[list[str]]:
+    return span_splitter(run_nlp(query))

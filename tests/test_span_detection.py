@@ -2,9 +2,11 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
 
-from coggle.span_detection import span_splitter
+from coggle.span_detection import detect_spans
 
 
 class TestSpanDetectionExamples(unittest.TestCase):
@@ -32,15 +34,15 @@ class TestSpanDetectionExamples(unittest.TestCase):
         ),
         ("find and delete all jpgs", [["find"], ["and"], ["delete"], ["all", "jpgs"]]),
         (
-            "create a new file called notes.txt",
+            "create a new file called notes.txt",[
             ["a", "new", "file"],
-            ["called", "notes.txt"],
+            ["called", "notes.txt"],]
         ),
         (
             "copy everything in documents to backup",
-            ["everything"],
+            [["everything"],
             ["in", "documents"],
-            ["to", "backup"],
+            ["to", "backup"],]
         ),
         (
             "make a symlink to this config file",
@@ -56,7 +58,7 @@ class TestSpanDetectionExamples(unittest.TestCase):
     def test_examples(self):
         for query, spans in self.examples:
             with self.subTest(query=query):
-                result = span_splitter(query)
+                result = detect_spans(query)
                 self.assertEqual(result, spans)
 
 

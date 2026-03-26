@@ -8,3 +8,11 @@ dependencies = [
     "pip>=26.0.1",
     "spacy>=3.8.13",
 ]
+
+[dependency-groups]
+dev = [
+    "coggle",
+]
+
+[tool.uv.sources]
+coggle = { workspace = true }
