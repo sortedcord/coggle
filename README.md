@@ -15,3 +15,8 @@ Load the `en_core_web_sm` model provided by SpaCY
 ```sh
 uv run python -m spacy download en_core_web_sm
 ```
+Running Tests
+
+```sh
+uv run python -m pytest
+```
