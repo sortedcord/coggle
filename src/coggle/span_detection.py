@@ -44,3 +44,24 @@ def run_nlp(query: str):
 
 def detect_spans(query: str) -> list[list[str]]:
     return span_splitter(run_nlp(query))
+
+# Dependency tree builder
+# Currently span detection only based on POS tags
+# Maybe we can also make use of the dependency tree to avoid making special control flows for every edge case
+
+def dependency_tree_builder(spacy_doc) -> dict:
+    nodes = {token.i: {
+        "text": token.text,
+        "pos": token.pos_,
+        "dep": token.dep_,
+        "children": []
+    } for token in spacy_doc}
+
+    root = None
+    for token in spacy_doc:
+        if token.dep_ == "ROOT":
+            root = token.i
+        else:
+            nodes[token.head.i]["children"].append(nodes[token.i])
+
+    return nodes[root]
