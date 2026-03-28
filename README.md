@@ -42,7 +42,25 @@ Coggle is built around two core ideas: a layered NLP pipeline that extracts mean
 
 Rather than using brittle regex or compute-heavy transformers, Coggle uses a staged pipeline where each layer has a narrow and specifc responsibility.
 
-![Architecture Overview Excalidraw](./docs/images/architecture_excali.png)
+```mermaid
+flowchart TD
+    %% vertical path
+    Query([Query]) --> IDC[Intent, Domain Classifier]
+    IDC --> PEP[Parameter Extraction and Processing]
+    
+    %% supposed to be horizontal section
+    subgraph Row [" "]
+        direction LR
+        SS[Span Splitter] --- SRC[Span Role Classifier] --- STC[Selector Type Classifier]
+    end
+    
+    PEP --> Row
+    Row --> SM[Slot Mapper]
+    
+    SM --> AR[Adapter Registry]
+    AR --> Command([Command])
+```
+
 
 **1. Intent Classifier**
 
