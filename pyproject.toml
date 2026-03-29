@@ -4,10 +4,14 @@ version = "0.1.0"
 description = "A lightweight, fully offline CLI tool for file processing, conversion, format specific operations and bulk management using tiny NLP pipelines, no GPU required."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["pip>=26.0.1", "spacy>=3.8.13"]
+
+dependencies = ["spacy>=3.8.13"]
+
+[project.optional-dependencies]
+train = ["scikit-learn>=1.8.0", "torch>=2.11.0", "transformers>=5.4.0"]
 
 [dependency-groups]
-dev = ["coggle"]
+dev = ["pytest", "coggle[train]"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

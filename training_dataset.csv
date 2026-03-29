@@ -1,0 +1,73 @@
+text, role
+all jpg files , Target
+from /home/rahul/photos/2023_trip/ , Target
+to /backup/photos/trip_2023/ , Destination
+all .log files , Target
+from /var/log/nginx/ , Target
+to /archive/nginx_logs/ , Destination
+/home/rahul/docs/resume_final_v2.docx , Target
+to /home/rahul/docs/resume_2026.docx , Destination
+all files , Target
+starting with report _ , Constraint
+from /data/reports/ , Target
+to /backup/reports/ , Destination
+/downloads/movie.mkv , Target
+to /media/movies/movie.mkv , Destination
+all .txt files , Target
+in /notes/ , Constraint
+to .md , Destination
+all , Target
+.mp3 files , Target
+from /music/old/ , Target
+to /music/library/ , Destination
+all .csv files , Target
+from /data/tmp/ , Target
+to /data/processed/ , Destination
+/projects/app/config.dev.json , Target
+to /projects/app/config.json , Destination
+all .png files , Target
+from /images/screenshots/ , Target
+to /backup/screenshots/ , Destination
+all files , Target
+larger than 100 MB , Constraint
+from /downloads/ , Target
+to /storage/large_files/ , Destination
+all files , Target
+starting with img _ , Constraint
+in /photos/ , Constraint
+to photo _ , Destination
+all .pdf files , Target
+from /home/rahul/docs/ , Target
+to /backup/docs/ , Destination
+all .tmp files , Target
+from /var/tmp/ , Target
+to /trash/tmp/ , Destination
+/music/song_old.mp3 , Target
+to /music/song_new.mp3 , Destination
+all .zip files , Target
+from /downloads/ , Target
+to /archive/zips/ , Destination
+all .exe files , Target
+starting with test _ , Constraint
+from /builds/ , Target
+to /quarantine/ , Destination
+all .jpeg files , Target
+in /photos/raw/ , Constraint
+to .jpg , Destination
+all files , Target
+modified today , Constraint
+from /logs/ , Target
+to /backup/today_logs/ , Destination
+/home/rahul/videos/clip.mp4 , Target
+to /home/rahul/videos/archive/clip.mp4 , Destination
+video /videos/raw/interview.mp4 , Target
+from 00:01:00 , Target
+to 00:05:00 , Destination
+video /videos/lecture.mp4 , Target
+into 10 - minute segments , Attribute
+/videos/input.mov , Target
+to /videos/output.mp4 , Destination
+using ffmpeg , Attribute
+audio , Target
+from /videos/movie.mp4 , Target
+photos and videos, Target
