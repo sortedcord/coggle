@@ -2,7 +2,6 @@
 
 A lightweight, fully offline CLI tool for file processing and conversions, format-specific operations, as well as easy bulk file management using tiny NLP pipelines. No tokens, no cloud nonsense.
 
----
 
 ## The Problem
 
@@ -14,7 +13,6 @@ Routine file tasks such as converting image formats, trimming videos, splitting 
 
 Coggle is the fourth option: a local, natural-language interface that maps plain commands to the right tool for the job.
 
----
 
 ## Capabilities
 
@@ -32,7 +30,6 @@ Convert between formats across image, video, audio, and document types.
 | Image    | crop, resize, filter, format conversion (via ImageMagick) |
 | Document | format conversion, page operations (via pandoc, others) |
 
----
 
 ## Architecture
 
@@ -92,7 +89,6 @@ Further categorizes `selector` spans by their type — `glob`, `time`, `size`, a
 
 Matches typed and classified spans to the specific parameter slots defined by the matched capability in the adapter. Uses the capability and slot descriptions to resolve spans to slots with a confidence score. When multiple adapter capabilities are candidates for the same intent, the one with the highest confidence match wins.
 
----
 
 ### The Adapter System
 
@@ -122,7 +118,6 @@ Domain: groups capabilities by the type of file they operate on (e.g. `video`, `
 
 **Registry**: at runtime, adapters register themselves with the central registry. The intent classifier queries the registry for known intents, and the slot mapper queries it to retrieve candidate capabilities for a given intent.
 
----
 
 ### Design Decisions
 
@@ -130,7 +125,6 @@ Domain: groups capabilities by the type of file they operate on (e.g. `video`, `
 - Confidence based resolution: When multiple capabilities match the same intent, the slot mapper scores each against the extracted spans and picks the highest-confidence match. Adapters do not declare priority over each other.
 - One intent per capability: Each capability maps to exactly one intent. This keeps capability definitions unambiguous and collision resolution straightforward.
 
----
 
 ## Design Constraints
 
@@ -139,7 +133,6 @@ Domain: groups capabilities by the type of file they operate on (e.g. `video`, `
 - **Small model footprint**: NLP pipeline uses `en_core_web_sm` via spaCy (~12MB) [May use MiniLM based SLM in the future]
 - Agentic-friendly: can be used as a subprocess tool by other agents for fast, local file operations
 
----
 
 ## Development Setup
 
@@ -161,7 +154,6 @@ Run tests:
 uv run python -m pytest
 ```
 
----
 
 ## Current Status
 
