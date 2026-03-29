@@ -44,7 +44,8 @@ def span_splitter(spacy_doc):
         elif token.pos_ == "ADP" or (token.pos_ == "VERB" and (not spans[-1] or previous_token.pos_ != "CCONJ")):
             spans.append([])
         spans[-1].append(token)
-    return output_normalizer(spans)
+    # return output_normalizer(spans)
+    return spans
 
 
 def run_nlp(query: str):
