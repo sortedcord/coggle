@@ -27,3 +27,16 @@ class UnexpectedValueError(FilterValdationError):
 class EmptyValueError(FilterValdationError):
     """ Raised when a filter value is an empty string """
     pass
+# custom exception class for resolver errors.
+class ResolverError(Exception):
+    """ Base exception class for resolver """
+    pass
+class PathNotFoundError(ResolverError):
+    """ Raised when a path was not found in the filesystem but there are suggestions """
+    pass
+class UnresolvablePathError(ResolverError):
+    """ Raised when a path was not found in the filesystem and there are NO suggestions """
+    pass
+class InvalidPathError(ResolverError):
+    """ A catch all for path structures that are invalid """
+    pass
