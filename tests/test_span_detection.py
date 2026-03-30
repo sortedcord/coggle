@@ -1,5 +1,5 @@
 import unittest
-from coggle.span_detection import detect_spans
+from coggle.span_detection import detect_spans, output_normalizer
 
 
 class TestSpanDetectionExamples(unittest.TestCase):
@@ -52,7 +52,7 @@ class TestSpanDetectionExamples(unittest.TestCase):
         for query, spans in self.examples:
             with self.subTest(query=query):
                 result = detect_spans(query)
-                self.assertEqual(result, spans)
+                self.assertEqual(output_normalizer(result), spans)
 
 
 if __name__ == "__main__":

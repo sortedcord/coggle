@@ -1,0 +1,54 @@
+[adapter]
+name    = "UNIX File Management"
+aliases = ["unix", "filesystem", "fs"]
+
+
+[[domains]]
+name        = "filesystem"
+description = "Any file or directory regardless of type"
+match       = "any"
+
+
+[[capabilities]]
+domain      = "filesystem"
+name        = "move"
+triggers    = ["move", "put", "shift", "transfer", "relocate"]
+description = "Move one or more files or directories to a destination"
+destructive = true
+command     = { base = "mv", positional_order = ["source", "destination"], execution = "single" }
+
+[capabilities.slots]
+source      = { category = "TARGET",      type = "filepath", required = true,  cardinality = "many", expansion = "inline", render = "positional", desc = "Files to move" }
+destination = { category = "DESTINATION", type = "filepath", required = true,  cardinality = 1,                            render = "positional", desc = "Location to move files into" }
+no_clobber  = { category = "ARGUMENT",    type = "boolean",  required = false, default = false,       render = "flag",      flag = "-n",           desc = "Do not overwrite existing files" }
+verbose     = { category = "ARGUMENT",    type = "boolean",  required = false, default = false,       render = "flag",      flag = "-v",           desc = "Print each file as it is moved" }
+
+
+[[capabilities]]
+domain      = "filesystem"
+name        = "copy"
+triggers    = ["copy", "duplicate", "replicate", "clone"]
+description = "Copy one or more files or directories to a destination"
+destructive = false
+command     = { base = "cp", positional_order = ["source", "destination"], execution = "single" }
+
+[capabilities.slots]
+source      = { category = "TARGET",      type = "filepath", required = true,  cardinality = "many", expansion = "inline", render = "positional", desc = "Files to copy" }
+destination = { category = "DESTINATION", type = "filepath", required = true,  cardinality = 1,                            render = "positional", desc = "Destination path or directory" }
+recursive   = { category = "ARGUMENT",    type = "boolean",  required = false, default = false,       render = "flag",      flag = "-r",           desc = "Copy directories recursively" }
+no_clobber  = { category = "ARGUMENT",    type = "boolean",  required = false, default = false,       render = "flag",      flag = "-n",           desc = "Do not overwrite existing files" }
+verbose     = { category = "ARGUMENT",    type = "boolean",  required = false, default = false,       render = "flag",      flag = "-v",           desc = "Print each file as it is copied" }
+
+
+[[capabilities]]
+domain      = "filesystem"
+name        = "delete"
+triggers    = ["delete", "remove", "erase", "wipe", "trash"]
+description = "Permanently delete one or more files or directories"
+destructive = true
+command     = { base = "rm", positional_order = ["target"], execution = "single" }
+
+[capabilities.slots]
+target      = { category = "TARGET",   type = "filepath", required = true,  cardinality = "many", expansion = "inline", render = "positional", desc = "Files to delete" }
+recursive   = { category = "ARGUMENT", type = "boolean",  required = false, default = false,       render = "flag",      flag = "-r",           desc = "Delete directories recursively" }
+force       = { category = "ARGUMENT", type = "boolean",  required = false, default = false,       render = "flag",      flag = "-f",           desc = "Suppress prompts, ignore missing files" }

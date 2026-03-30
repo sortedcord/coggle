@@ -92,32 +92,38 @@ Matches typed and classified spans to the specific parameter slots defined by th
 
 ### The Adapter System
 
-Adapters are how Coggle knows what tools exist and what they can do. Each adapter encapsulates one external tool and declares its capabilities in a self describing way.
+Adapters are how Coggle knows what tools exist and what they can do. Each adapter wraps a single external tool and declares its capabilities in a self-describing way that the NLP pipeline can query at runtime.
+
+For further implementation details look at the [Adapters wiki page](https://github.com/sortedcord/coggle/wiki/Adapters)
 
 ```
-Adapter (e.g ffmpeg)
-  └── Domain (e.g video)
-  │     └── Capability (e.g trim)
-  │           ├── intent: "trim"
-  │           ├── description: "cut or shorten a video between two points in time"
+Adapter (e.g. ffmpeg)
+  └── Domain (e.g. video)
+  │     └── Capability (e.g. trim)
+  │           ├── triggers:     ["trim", "cut", "clip"]
+  │           ├── description:  "cut or shorten a video between two points in time"
+  │           ├── destructive:  false
+  │           ├── command:      { base = "ffmpeg", execution = "loop", ... }
   │           └── slots:
-  │                 ├── start_time  (timestamp) — "where to begin the cut"
-  │                 ├── end_time    (timestamp) — "where to end the cut"
-  │                 ├── input       (filepath)  — "the source video file"
-  │                 └── output      (filepath)  — "the output file path"
-  └── Domain (e.g audio)
-        └── Capability (e.g extract)
+  │                 ├── input       (filepath,   TARGET)      — "the source video file"
+  │                 ├── output      (filepath,   DESTINATION) — "the output file path"
+  │                 ├── start_time  (timestamp,  CONSTRAINT)  — "where to begin the cut"
+  │                 ├── end_time    (timestamp,  CONSTRAINT)  — "where to end the cut"
+  │                 └── codec       (enum,       ARGUMENT)    — "video codec to encode with"
+  └── Domain (e.g. audio)
+        └── Capability (e.g. extract)
               └── ...
 ```
 
-Adapter: wraps a single external tool. Can declare capabilities across multiple domains.
+**Adapter** — wraps a single external tool. Can declare capabilities across multiple domains.
 
-Domain: groups capabilities by the type of file they operate on (e.g. `video`, `image`, `filesystem`).
+**Domain** — groups capabilities by the type of file they operate on. Defined by file extensions, MIME types, or a wildcard `match = "any"` for type-agnostic operations like filesystem management. Acts as a filter on the candidate capability set, not a hard selector.
 
-**Capability**: a single operation the tool can perform. Each capability maps to exactly one intent and defines the full parameter signature required to construct the command. Slot descriptions are what the span mapper uses to match spans to parameters.
+**Capability** — a single operation the tool can perform. Maps to exactly one intent via its `triggers` list and defines the full parameter signature required to construct the command. Capabilities with `destructive = true` require a dry-run confirmation before execution.
 
-**Registry**: at runtime, adapters register themselves with the central registry. The intent classifier queries the registry for known intents, and the slot mapper queries it to retrieve candidate capabilities for a given intent.
+**Slot** — a single parameter of a capability. Each slot declares a span `category` (`TARGET`, `DESTINATION`, `CONSTRAINT`, `ARGUMENT`), a `type` (`filepath`, `quantity`, `timestamp`, `enum`, ...), and a natural language `desc` that the slot mapper uses for confidence scoring. Slots with `cardinality = "many"` declare an `expansion` strategy (`inline` or `loop`) that controls how multiple values are passed to the tool.
 
+**Registry** — at runtime, adapters register themselves with the central registry. The intent classifier queries the registry for known triggers, and the slot mapper queries it to retrieve candidate capabilities for a given intent.
 
 ### Design Decisions
 

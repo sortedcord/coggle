@@ -1,0 +1,73 @@
+# coggle adapter schema
+# ──────────────────────────────────────────────────────────────────────────────
+# Types:   string | boolean | integer | array<T> | enum<"a"|"b"|...>
+# Markers: [required] | [optional, default=X]
+# Rules:   noted inline where constraints apply across fields
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── adapter ───────────────────────────────────────────────────────────────────
+
+[adapter]
+name    = string        # [required]  display name
+aliases = array<string> # [required]  names users can force with "using <alias>"
+
+# ── domains ───────────────────────────────────────────────────────────────────
+# At least one [[domains]] block is required.
+# Each domain must define exactly one of: match = "any", extensions, mimetypes.
+# Multiple criteria (extensions + mimetypes) are allowed together, but
+# match = "any" is mutually exclusive with both.
+
+[[domains]]
+name        = string        # [required]  identifier referenced by capabilities
+description = string        # [required]  human readable, for documentation
+match       = enum<"any">   # [optional]  wildcard — matches any file regardless of type
+extensions  = array<string> # [optional]  e.g. [".mp4", ".mkv"] — matched against TARGET filepath
+mimetypes   = array<string> # [optional]  e.g. ["video/mp4"] — matched against detected mimetype
+
+# ── capabilities ──────────────────────────────────────────────────────────────
+# At least one [[capabilities]] block is required.
+# Each capability must have at least one slot with category = "TARGET".
+# Each capability must have a unique name within the adapter.
+# triggers must not overlap with another capability's triggers in the same adapter
+# — overlapping triggers across adapters are resolved by slot fitting.
+
+[[capabilities]]
+domain      = string        # [required]  must match a defined domain name above
+name        = string        # [required]  unique identifier within this adapter
+triggers    = array<string> # [required]  intent keywords that activate this capability
+description = string        # [required]  used by slot mapper for confidence scoring
+destructive = boolean       # [required]  true = requires dry-run confirmation before execution
+
+# command: describes how to build the shell invocation
+# ──────────────────────────────────────────────────────────────────────────────
+# positional_order lists slot names whose render = "positional" in their
+# declared order. Flag slots are always emitted before positionals.
+# execution = "loop" means the command is invoked once per resolved TARGET value.
+# execution = "single" means all values are passed in one invocation.
+
+command = {
+    base             = string,              # [required]  the binary to invoke e.g. "mv", "ffmpeg"
+positional_order = array<string>,       # [required]  ordered slot names for positional args
+execution        = enum<"single"|"loop"> # [required]  single = one call, loop = one call per target
+}
+
+# slots: each key is the slot name, value is an inline table
+# ──────────────────────────────────────────────────────────────────────────────
+# Slot name is used in positional_order and command templates.
+# expansion is required when cardinality = "many".
+# flag is required when render = "flag".
+# default is only valid when required = false.
+# keywords is optional but recommended for ARGUMENT slots to enable fast-path matching.
+
+[capabilities.slots.<name>]
+category    = enum<"TARGET"|"DESTINATION"|"CONSTRAINT"|"ARGUMENT">  # [required]
+type        = enum<"filepath"|"boolean"|"string"|"integer"|         # [required]
+"timestamp"|"size"|"resolution"|"codec">
+required    = boolean                                               # [required]
+desc        = string                                                # [required]  used for semantic slot matching
+cardinality = integer | enum<"many">                               # [optional, default=1]
+expansion   = enum<"inline"|"loop">                                # [required if cardinality="many"]
+render      = enum<"positional"|"flag">                            # [required]
+flag        = string                                                # [required if render="flag"]
+default     = any                                                   # [optional, only if required=false]
+keywords    = array<string>                                         # [optional]  fast-path synonyms for ARGUMENT matching

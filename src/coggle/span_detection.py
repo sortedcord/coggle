@@ -43,6 +43,9 @@ def span_splitter(spacy_doc):
         # if current token is ADP or (VERB and previous token is not CCONJ) then new span
         elif token.pos_ == "ADP" or (token.pos_ == "VERB" and (not spans[-1] or previous_token.pos_ != "CCONJ")):
             spans.append([])
+        # if current token is ADV then new span
+        elif token.pos_ == "ADV":
+            spans.append([])
         spans[-1].append(token)
     # return output_normalizer(spans)
     return spans
